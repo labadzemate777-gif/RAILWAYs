@@ -1,0 +1,41 @@
+<nav class="navbar" [class.scrolled]="scrolled">
+  <div class="navbar__inner container">
+    <div class="navbar__top">
+      <a class="navbar__logo" routerLink="/" (click)="closeMenu()">
+        <span class="navbar__logo-icon">SR</span>
+        <span class="navbar__logo-text">Step<strong>Railway</strong></span>
+      </a>
+      <div class="navbar__actions">
+        <button type="button" class="navbar__lang" (click)="lang.toggle()">
+          {{ lang.current === 'ka' ? 'EN' : 'KA' }}
+        </button>
+        <app-theme-toggle></app-theme-toggle>
+        <a *ngIf="!auth.isLoggedIn" routerLink="/auth" class="btn btn--ghost navbar__cta" (click)="closeMenu()">
+          {{ lang.t('Login', 'შესვლა') }}
+        </a>
+        <button *ngIf="auth.isLoggedIn" type="button" class="btn btn--ghost navbar__cta" (click)="logout()">
+          {{ lang.t('Logout', 'გასვლა') }}
+        </button>
+        <a routerLink="/booking" class="btn btn--primary navbar__cta" (click)="closeMenu()">
+          {{ lang.t('Book Now', 'ყიდვა') }}
+        </a>
+        <button class="navbar__hamburger" (click)="toggleMenu()" [class.open]="menuOpen" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="navbar__bottom">
+      <ul class="navbar__links" [class.open]="menuOpen">
+        <li *ngFor="let link of navLinks">
+          <a [routerLink]="link.path"
+             [routerLinkActiveOptions]="{ exact: link.exact }"
+             routerLinkActive="active"
+             (click)="closeMenu()">
+            {{ lang.t(link.en, link.ka) }}
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

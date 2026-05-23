@@ -1,0 +1,106 @@
+:host {
+  position: fixed;
+  left: 0; top: 0;
+  width: 220px;
+  height: 100vh;
+  background: linear-gradient(180deg, var(--cream) 0%, var(--surface-alt) 100%);
+  border-right: 2px solid var(--border);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 40;
+  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.05);
+
+  @media (max-width: 1023px) {
+    position: sticky;
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    align-items: center;
+    border-right: none;
+    border-bottom: 2px solid var(--border);
+    padding: 12px 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  }
+}
+
+.brand {
+  font-family: var(--font-display);
+  font-size: 30px;
+  line-height: 0.9;
+  letter-spacing: 0.02em;
+
+  &__top { color: var(--accent); }
+  &__bot { color: var(--text-primary); }
+  &__meta {
+    margin-top: 8px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--text-muted);
+  }
+}
+
+.nav {
+  margin-top: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  @media (max-width: 1023px) {
+    flex-direction: row;
+    margin: 0;
+    overflow-x: auto;
+    gap: 8px;
+  }
+
+  &__item {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 8px 12px 8px 12px;
+    border-left: 3px solid transparent;
+    border-radius: 0 4px 4px 0;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    transition: all 0.2s ease;
+    color: var(--text-secondary);
+
+    &:hover {
+      border-left-color: var(--accent);
+      background: var(--accent-light);
+      color: var(--accent);
+      padding-left: 16px;
+    }
+
+    &--active {
+      border-left-color: var(--accent);
+      background: var(--accent-light);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    span:first-child {
+      font-size: 10px;
+      opacity: 0.6;
+    }
+  }
+}
+
+.foot {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 1.6;
+  color: var(--text-muted);
+
+  hr {
+    border: 0;
+    border-top: 1px solid var(--border);
+    margin-bottom: 8px;
+  }
+
+  @media (max-width: 1023px) { display: none; }
+}

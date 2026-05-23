@@ -1,0 +1,140 @@
+<!-- Hero -->
+<section class="hero">
+  <div class="hero__bg-grid"></div>
+  <div class="hero__content container">
+    <div class="hero__wrap">
+      <div class="hero__intro">
+        <div class="hero__eyebrow">
+          <span class="badge badge--accent"><span class="ui-icon ui-icon--train" aria-hidden="true"></span> Georgia's Rail Network</span>
+        </div>
+        <h1 class="hero__title">
+          Travel Smarter.<br>
+          <span>Ride the Rails.</span>
+        </h1>
+        <p class="hero__subtitle">
+          Book seats, track departures, and manage your journey in one place with StepRailway.
+        </p>
+        <div class="hero__actions">
+          <a routerLink="/booking" class="btn btn--primary">Book a Ticket</a>
+          <a routerLink="/departures" class="btn btn--ghost">View Departures</a>
+        </div>
+      </div>
+
+      <aside class="hero__aside">
+        <div class="hero-card card">
+          <strong>New route editor</strong>
+          <p>Compare trains, routes and prices with one dashboard-like overview.</p>
+        </div>
+        <div class="hero-card card hero-card--meta">
+          <div class="hero-card__row">
+            <span>Fastest departure</span>
+            <strong>8 min</strong>
+          </div>
+          <div class="hero-card__row">
+            <span>Top route</span>
+            <strong>Tbilisi - Batumi</strong>
+          </div>
+          <div class="hero-card__row">
+            <span>Support</span>
+            <strong>24/7</strong>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <div class="hero__train-track">
+    <div class="track-line"><span>StepRailway</span></div>
+  </div>
+</section>
+
+<!-- Stats -->
+<section class="stats container">
+  <div class="stats__grid">
+    <div class="stats__item fade-in">
+      <span class="stats__number">{{ stats.trains }}</span>
+      <span class="stats__label">Active Trains</span>
+    </div>
+    <div class="stats__item fade-in" style="animation-delay:0.1s">
+      <span class="stats__number">{{ stats.stations }}</span>
+      <span class="stats__label">Stations</span>
+    </div>
+    <div class="stats__item fade-in" style="animation-delay:0.2s">
+      <span class="stats__number">{{ stats.departures }}</span>
+      <span class="stats__label">Daily Departures</span>
+    </div>
+    <div class="stats__item fade-in" style="animation-delay:0.3s">
+      <span class="stats__number">24/7</span>
+      <span class="stats__label">Support</span>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="features container">
+  <div class="page-header" style="text-align:center">
+    <h2>Why Choose <span>StepRailway</span></h2>
+    <p>Everything you need for a seamless rail experience</p>
+  </div>
+  <div class="grid grid--2">
+    <div class="feature-card card fade-in" *ngFor="let f of features; let i = index" [style.animation-delay]="i*0.1+'s'">
+      <div class="feature-card__icon"><span class="ui-icon" [ngClass]="'ui-icon--' + f.icon" aria-hidden="true"></span></div>
+      <h3>{{ f.title }}</h3>
+      <p>{{ f.desc }}</p>
+    </div>
+  </div>
+</section>
+
+<!-- Recent Trains -->
+<section class="recent container">
+  <div class="page-header">
+    <h2>Available <span>Trains</span></h2>
+    <p>Browse our current fleet</p>
+  </div>
+
+  <div class="grid grid--3" *ngIf="!loading">
+    <div class="train-card card slide-up" *ngFor="let train of recentTrains; let i = index" [style.animation-delay]="i*0.12+'s'">
+      <div class="train-card__header">
+        <span class="train-card__icon ui-icon ui-icon--train" aria-hidden="true"></span>
+        <span class="badge badge--accent">Train #{{ train.id }}</span>
+      </div>
+      <h3 class="train-card__name">{{ train.name || 'Express Train' }}</h3>
+      <div class="train-card__info">
+        <div class="info-row" *ngIf="train.from || train.route">
+          <span class="icon ui-icon ui-icon--pin" aria-hidden="true"></span>
+          <span>{{ train.from || train.route || 'Multiple routes' }}</span>
+        </div>
+        <div class="info-row" *ngIf="train.speed">
+          <span class="icon ui-icon ui-icon--route" aria-hidden="true"></span>
+          <span>{{ train.speed }} km/h</span>
+        </div>
+      </div>
+      <a [routerLink]="['/trains', train.id]" class="btn btn--ghost" style="width:100%; justify-content:center; margin-top:16px">
+        View Details
+      </a>
+    </div>
+  </div>
+
+  <div class="grid grid--3" *ngIf="loading">
+    <div class="card" style="padding:24px; height:200px" *ngFor="let i of [1,2,3]">
+      <div class="skeleton" style="height:20px; width:60%; margin-bottom:12px"></div>
+      <div class="skeleton" style="height:16px; width:80%; margin-bottom:8px"></div>
+      <div class="skeleton" style="height:16px; width:50%"></div>
+    </div>
+  </div>
+
+  <div style="text-align:center; margin-top:32px">
+    <a routerLink="/trains" class="btn btn--primary">View All Trains</a>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-box">
+      <h2>Ready to Travel?</h2>
+      <p>Book your ticket now and enjoy the journey</p>
+      <a routerLink="/booking" class="btn btn--primary">Book Now</a>
+    </div>
+  </div>
+</section>

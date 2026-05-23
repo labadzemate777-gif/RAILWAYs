@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  /* Pastel Base Colors */
+  --cream: #fdfaf5;
+  --ink: #5a4a47;
+  --oxblood: #f0a8a8;
+  --mustard: #fce4a6;
+  --sage: #c8dcc4;
+  --muted: #b8a5a0;
+  --border: #e8d5cc;
+
+  /* Extended Pastel Palette */
+  --pastel-pink: #f8d7da;
+  --pastel-blue: #d7f0fc;
+  --pastel-green: #d4f1d4;
+  --pastel-purple: #e8d5f2;
+  --pastel-peach: #ffd9b8;
+  --pastel-lavender: #ede7f6;
+
+  /* UI Variables */
+  --text-primary: #5a4a47;
+  --text-secondary: #8b7b78;
+  --text-muted: #a89f9c;
+  --surface: #fdfaf5;
+  --surface-alt: #f8f3ee;
+  --accent: #f0a8a8;
+  --accent-light: #f8d7da;
+  --accent-secondary: #fce4a6;
+
+  /* Status Colors (Pastel) */
+  --success: #9dd99d;
+  --success-bg: #e8f5e8;
+  --error: #f5a5a5;
+  --error-bg: #fde8e8;
+  --warning: #f0d89b;
+  --warning-bg: #fef4e6;
+  --info: #b8e6f8;
+  --info-bg: #e8f7fc;
+
+  /* Neon/Glow (Soft) */
+  --neon: #f0a8a8;
+  --neon-glow: rgba(240, 168, 168, 0.2);
+
+  /* Spacing & Styling */
+  --radius: 12px;
+  --radius-sm: 6px;
+  --transition: 0.25s ease-in-out;
+
+  --font-display: 'Bebas Neue', Impact, sans-serif;
+  --font-serif: 'Cormorant Garamond', 'Times New Roman', serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+a { color: var(--accent); text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+input, select, textarea { font-family: inherit; }
+::selection { background: var(--accent-light); color: var(--ink); }

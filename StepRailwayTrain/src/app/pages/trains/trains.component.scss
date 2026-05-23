@@ -1,0 +1,82 @@
+:host { display: block; }
+
+.head {
+  padding: 64px;
+  border-bottom: 1px solid var(--ink);
+
+  &__eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--oxblood);
+  }
+  &__title {
+    margin-top: 16px;
+    font-family: var(--font-display);
+    font-size: clamp(80px, 12vw, 140px);
+    line-height: 0.9;
+  }
+  &__lede {
+    margin-top: 24px;
+    max-width: 640px;
+    font-style: italic;
+    font-size: 20px;
+  }
+}
+
+.table {
+  &__head, &__row {
+    display: grid;
+    grid-template-columns: 1fr 2fr 2fr 1.5fr 2fr;
+  }
+  &__head {
+    position: sticky; top: 0;
+    background: var(--cream);
+    border-bottom: 1px solid var(--ink);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+
+    > div {
+      padding: 12px;
+      border-right: 1px solid var(--ink);
+      &:last-child { border-right: none; text-align: right; }
+    }
+  }
+  &__row {
+    border-bottom: 1px solid rgba(26, 22, 20, 0.4);
+    transition: background 0.2s;
+
+    &:hover {
+      background: rgba(230, 184, 74, 0.3);
+      .name { color: var(--oxblood); }
+    }
+
+    > div {
+      padding: 24px;
+      border-right: 1px solid rgba(26, 22, 20, 0.3);
+      &:last-child { border-right: none; text-align: right; }
+    }
+  }
+
+  .name {
+    font-family: var(--font-display);
+    font-size: 30px;
+    transition: color 0.2s;
+  }
+  .id, .meta {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .class { font-style: italic; }
+  .year { font-family: var(--font-display); font-size: 24px; }
+  .status {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    text-transform: uppercase;
+  }
+}

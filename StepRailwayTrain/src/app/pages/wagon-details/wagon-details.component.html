@@ -1,0 +1,57 @@
+<div class="detail-page container">
+  <button class="btn btn--ghost back-btn" (click)="goBack()">Back to Trains</button>
+
+  <div *ngIf="loading">
+    <div class="skeleton" style="height:48px; width:50%; margin-bottom:16px"></div>
+    <div class="skeleton" style="height:200px; border-radius:12px"></div>
+  </div>
+
+  <div class="empty-state" *ngIf="error">
+    <div class="icon"><span class="ui-icon ui-icon--alert ui-icon--large" aria-hidden="true"></span></div>
+    <h3>{{ error }}</h3>
+    <button class="btn btn--primary" (click)="goBack()">Go Back</button>
+  </div>
+
+  <div *ngIf="wagon && !loading" class="fade-in">
+    <div class="detail-header">
+      <div class="detail-header__left">
+        <div class="detail-icon"><span class="ui-icon ui-icon--wagon" aria-hidden="true"></span></div>
+        <div>
+          <span class="badge badge--accent">Wagon #{{ wagon.id }}</span>
+          <h1 class="detail-header__title" style="margin-top:8px">{{ wagon.name || 'Wagon ' + wagon.id }}</h1>
+          <p class="detail-header__sub" *ngIf="wagon.type || wagon.class">{{ wagon.type || wagon.class }}</p>
+        </div>
+      </div>
+      <button class="btn btn--primary" (click)="bookNow()">Book a Seat</button>
+    </div>
+    <div class="divider"></div>
+
+    <div class="detail-grid">
+      <div class="detail-card card">
+        <h2 class="detail-card__title">Wagon Information</h2>
+        <div class="props-table">
+          <div class="props-row" *ngFor="let entry of getEntries(wagon)">
+            <span class="props-row__key">{{ entry.key }}</span>
+            <span class="props-row__val">{{ entry.val }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-card card" *ngIf="getSeats().length > 0">
+        <h2 class="detail-card__title">Seats <span class="badge badge--accent">{{ getSeats().length }}</span></h2>
+        <div class="seats-grid">
+          <div class="seat" *ngFor="let seat of getSeats()"
+               [class.seat--taken]="seat.taken || seat.status === 'taken' || seat.booked"
+               [class.seat--free]="!seat.taken && seat.status !== 'taken' && !seat.booked">
+            <span class="seat__num">{{ seat.number || seat.id || seat }}</span>
+            <span class="seat__status"><span class="ui-icon" [class.ui-icon--close]="seat.taken || seat.booked" [class.ui-icon--check]="!seat.taken && !seat.booked" aria-hidden="true"></span></span>
+          </div>
+        </div>
+        <div class="seat-legend">
+          <div class="legend-item"><span class="legend-dot free"></span> Available</div>
+          <div class="legend-item"><span class="legend-dot taken"></span> Taken</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

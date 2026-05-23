@@ -1,0 +1,51 @@
+<div class="departures-page container">
+  <div class="page-header">
+    <h1>Live <span>Departures</span></h1>
+    <p>Real-time schedule for all StepRailway routes</p>
+  </div>
+
+  <div class="dep-loading" *ngIf="loading">
+    <div class="dep-row skeleton" style="height:80px; margin-bottom:8px" *ngFor="let i of [1,2,3,4,5]"></div>
+  </div>
+
+  <div class="empty-state" *ngIf="error">
+    <div class="icon"><span class="ui-icon ui-icon--alert ui-icon--large" aria-hidden="true"></span></div><h3>{{ error }}</h3>
+  </div>
+
+  <div class="empty-state" *ngIf="!loading && !error && departures.length === 0">
+    <div class="icon"><span class="ui-icon ui-icon--route ui-icon--large" aria-hidden="true"></span></div><h3>No departures found</h3><p>Check back later for updated schedules.</p>
+  </div>
+
+  <div class="dep-board" *ngIf="!loading && !error && departures.length > 0">
+    <div class="dep-board__header">
+      <span>Train</span><span>Details</span><span>Action</span>
+    </div>
+
+    <div class="dep-row fade-in" *ngFor="let dep of departures; let i = index" [style.animation-delay]="i*0.04+'s'">
+      <div class="dep-row__train">
+        <span class="dep-row__icon ui-icon ui-icon--train" aria-hidden="true"></span>
+        <div>
+          <strong class="dep-row__id">#{{ dep.id }}</strong>
+          <div class="dep-row__sub" *ngIf="dep.trainId || dep.train_id">
+            Train {{ dep.trainId || dep.train_id }}
+          </div>
+        </div>
+      </div>
+
+      <div class="dep-row__details">
+        <ng-container *ngFor="let key of getKeys(dep)">
+          <div class="dep-detail" *ngIf="dep[key] !== null && dep[key] !== undefined">
+            <span class="dep-detail__key">{{ key }}</span>
+            <span class="dep-detail__val" [class.dep-detail__val--time]="isTimeField(key)">
+              {{ formatValue(dep[key]) }}
+            </span>
+          </div>
+        </ng-container>
+      </div>
+
+      <div class="dep-row__action">
+        <a routerLink="/booking" class="btn btn--primary" style="font-size:0.85rem; padding:8px 14px">Book</a>
+      </div>
+    </div>
+  </div>
+</div>

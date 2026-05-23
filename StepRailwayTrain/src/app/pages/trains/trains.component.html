@@ -1,0 +1,111 @@
+<div class="trains-page container">
+  <div class="page-header">
+    <h1>აირჩიე <span>მიმართულება</span></h1>
+    <p>მიუთითე საიდან სად მიდიხარ და შემდეგ პირდაპირ დაჯავშნე სასურველი მატარებელი.</p>
+  </div>
+
+  <section class="route-search card" aria-label="Train route search">
+    <div class="route-search__field">
+      <label for="from">საიდან</label>
+      <select id="from" class="form-control form-control--choice" [formControl]="from">
+        <option value="">ყველა სადგური</option>
+        <option *ngFor="let item of fromOptions" [value]="item">{{ item }}</option>
+      </select>
+    </div>
+
+    <div class="route-search__connector" aria-hidden="true">
+      <span class="ui-icon ui-icon--route"></span>
+    </div>
+
+    <div class="route-search__field">
+      <label for="to">სად</label>
+      <select id="to" class="form-control form-control--choice" [formControl]="to">
+        <option value="">ყველა სადგური</option>
+        <option *ngFor="let item of toOptions" [value]="item">{{ item }}</option>
+      </select>
+    </div>
+
+    <div class="route-search__field route-search__field--search">
+      <label for="search">მატარებლის ძებნა</label>
+      <div class="search-inline">
+        <span class="ui-icon ui-icon--search" aria-hidden="true"></span>
+        <input id="search" class="form-control" type="search" placeholder="ნომერი ან დასახელება" [formControl]="search">
+      </div>
+    </div>
+
+    <div class="route-search__field">
+      <label for="passengerCount">მგზავრები</label>
+      <select id="passengerCount" class="form-control form-control--choice" [formControl]="passengerCount">
+        <option *ngFor="let count of passengerOptions" [ngValue]="count">{{ count }}</option>
+      </select>
+    </div>
+
+    <button type="button" class="btn btn--ghost route-search__reset" (click)="resetRoute()">
+      გასუფთავება
+    </button>
+  </section>
+
+  <div class="result-count" *ngIf="!loading && !error">
+    ნაპოვნია {{ filtered.length }} მატარებელი
+  </div>
+
+  <div class="grid grid--3" *ngIf="loading">
+    <div class="card" style="padding:24px; height:220px" *ngFor="let item of [1,2,3,4,5,6]">
+      <div class="skeleton" style="height:16px; width:40%; margin-bottom:16px"></div>
+      <div class="skeleton" style="height:24px; width:70%; margin-bottom:12px"></div>
+      <div class="skeleton" style="height:14px; width:55%; margin-bottom:8px"></div>
+      <div class="skeleton" style="height:14px; width:45%"></div>
+    </div>
+  </div>
+
+  <div class="empty-state" *ngIf="error">
+    <div class="icon">
+      <span class="ui-icon ui-icon--alert ui-icon--large" aria-hidden="true"></span>
+    </div>
+    <h3>მონაცემების ჩატვირთვა ვერ მოხერხდა</h3>
+    <p>{{ error }}</p>
+  </div>
+
+  <div class="empty-state" *ngIf="!loading && !error && filtered.length === 0">
+    <div class="icon">
+      <span class="ui-icon ui-icon--search ui-icon--large" aria-hidden="true"></span>
+    </div>
+    <h3>მატარებელი ვერ მოიძებნა</h3>
+    <p>სცადე სხვა მიმართულება ან ძებნის ტექსტი.</p>
+  </div>
+
+  <div class="grid grid--3" *ngIf="!loading && !error && filtered.length > 0">
+    <article class="train-card card fade-in"
+             *ngFor="let train of filtered; let i = index"
+             [style.animation-delay]="i * 0.05 + 's'">
+      <div class="train-card__top">
+        <div class="train-card__ico">
+          <span class="ui-icon ui-icon--train" aria-hidden="true"></span>
+        </div>
+        <span class="badge badge--accent">#{{ train.number || train.id }}</span>
+      </div>
+
+      <h3 class="train-card__name">{{ train.name || ('მატარებელი ' + train.id) }}</h3>
+
+      <div class="train-card__summary">
+        <div class="summary-row">
+          <span>მიმართულება</span>
+          <strong>{{ routeLabel(train) }}</strong>
+        </div>
+        <div class="summary-row">
+          <span>დრო</span>
+          <strong>{{ timeLabel(train) }}</strong>
+        </div>
+        <div class="summary-row" *ngIf="train.date">
+          <span>დღე</span>
+          <strong>{{ train.date }}</strong>
+        </div>
+      </div>
+
+      <div class="train-card__footer">
+        <a [routerLink]="['/trains', train.id]" class="btn btn--ghost">დეტალები</a>
+        <a routerLink="/booking" [queryParams]="getBookingQuery(train)" class="btn btn--primary">დაჯავშნა</a>
+      </div>
+    </article>
+  </div>
+</div>

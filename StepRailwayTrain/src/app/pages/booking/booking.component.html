@@ -1,0 +1,217 @@
+<div class="booking-page container">
+  <div class="page-header booking-hero">
+    <div class="ui-icon ui-icon--ticket" aria-hidden="true"></div>
+    <h1>{{ lang.t('Book a', 'იყიდე') }} <span>{{ lang.t('Ticket', 'ბილეთი') }}</span></h1>
+    <p>{{ lang.t('Choose route, time, train, wagon and seat in one clean flow.', 'აირჩიე მიმართულება, დრო, მატარებელი, ვაგონი და ადგილი მარტივად.') }}</p>
+  </div>
+
+  <div class="auth-warning card" *ngIf="!auth.isLoggedIn">
+    <span class="ui-icon ui-icon--lock" aria-hidden="true"></span>
+    <div>
+      <strong>{{ lang.t('Login required', 'საჭიროა ავტორიზაცია') }}</strong>
+      <span>{{ lang.t('Purchase is disabled until login or registration.', 'ყიდვა დაბლოკილია შესვლამდე ან რეგისტრაციამდე.') }}</span>
+    </div>
+    <a routerLink="/auth" class="btn btn--primary">{{ lang.t('Login / Register', 'შესვლა / რეგისტრაცია') }}</a>
+  </div>
+
+  <div class="booking-grid" *ngIf="!dataLoading && isForm">
+    <div class="booking-panel">
+      <form [formGroup]="bookingForm" (ngSubmit)="submit()" class="booking-form card">
+        <div class="form-section">
+          <h3 class="form-section__title"><span class="ui-icon ui-icon--user"></span>{{ lang.t('Passenger Info', 'მგზავრის ინფორმაცია') }}</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="email">{{ lang.t('Email', 'ელფოსტა') }}</label>
+            <input id="email" type="email" class="form-control" formControlName="email" maxlength="80" placeholder="nino@example.com" [class.ng-invalid]="invalid('email')">
+            <div class="form-error" *ngIf="invalid('email')">{{ lang.t('Valid email is required', 'საჭიროა სწორი ელფოსტა') }}</div>
+          </div>
+          <div class="form-group">
+            <label for="phoneNumber">{{ lang.t('Phone Number', 'ტელეფონის ნომერი') }}</label>
+            <input id="phoneNumber" type="tel" class="form-control" formControlName="phoneNumber" maxlength="20" placeholder="+995 5XX XX XX XX" [class.ng-invalid]="invalid('phoneNumber')">
+            <div class="form-error" *ngIf="invalid('phoneNumber')">{{ lang.t('Valid phone number is required', 'საჭიროა სწორი ტელეფონის ნომერი') }}</div>
+          </div>
+        </div>
+
+        <div class="form-group passenger-count">
+          <label for="bookingPassengerCount">{{ lang.t('Passengers', 'მგზავრები') }}</label>
+          <select id="bookingPassengerCount" class="form-control form-control--choice" [value]="passengerCount" (change)="changePassengerCount($any($event.target).value)">
+            <option *ngFor="let count of [1,2,3,4,5]" [value]="count">{{ count }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="form-section">
+        <h3 class="form-section__title"><span class="ui-icon ui-icon--route"></span>{{ lang.t('Route, Time and Seat', 'მიმართულება, დრო და ადგილი') }}</h3>
+        <div class="route-summary" *ngIf="routeLocked">
+          <div>
+            <span>{{ lang.t('Route', 'მიმართულება') }}</span>
+            <strong>{{ selectedRouteLabel() }}</strong>
+          </div>
+          <div>
+            <span>{{ lang.t('Train and time', 'მატარებელი და დრო') }}</span>
+            <strong>{{ selectedTrainLabel() }}</strong>
+          </div>
+          <a routerLink="/trains" class="btn btn--ghost">{{ lang.t('Change', 'შეცვლა') }}</a>
+        </div>
+
+        <div class="route-picker">
+          <div class="form-group route-picker__wide" *ngIf="!routeLocked">
+            <label for="departureId">{{ lang.t('Direction and day', 'მიმართულება და დღე') }}</label>
+            <select id="departureId" class="form-control form-control--choice" formControlName="departureId" [class.ng-invalid]="invalid('departureId')">
+              <option value="">{{ lang.t('Select direction...', 'აირჩიე მიმართულება...') }}</option>
+              <option *ngFor="let d of departures" [value]="d.id">{{ departureOptionLabel(d) }}</option>
+            </select>
+            <div class="form-error" *ngIf="invalid('departureId')">{{ lang.t('Please select a departure', 'აირჩიე გასვლა') }}</div>
+          </div>
+
+          <div class="form-group" *ngIf="!routeLocked">
+            <label for="from">{{ lang.t('From', 'საიდან') }}</label>
+            <input id="from" class="form-control" list="stationList" formControlName="from" maxlength="60" placeholder="Tbilisi" [class.ng-invalid]="invalid('from')">
+          </div>
+
+          <div class="form-group" *ngIf="!routeLocked">
+            <label for="to">{{ lang.t('To', 'სად') }}</label>
+            <input id="to" class="form-control" list="stationList" formControlName="to" maxlength="60" placeholder="Batumi" [class.ng-invalid]="invalid('to')">
+          </div>
+
+          <div class="form-group route-picker__wide" *ngIf="!routeLocked">
+            <label for="trainId">{{ lang.t('Train and time', 'მატარებელი და დრო') }}</label>
+            <select id="trainId" class="form-control form-control--choice" formControlName="trainId" [class.ng-invalid]="invalid('trainId')" [attr.disabled]="!field('departureId')?.value ? true : null">
+              <option value="">{{ lang.t('Select train time...', 'აირჩიე მატარებლის დრო...') }}</option>
+              <option *ngFor="let t of filteredTrains" [value]="t.id">{{ trainOptionLabel(t) }}</option>
+            </select>
+            <div class="form-error" *ngIf="invalid('trainId')">{{ lang.t('Please select a train', 'აირჩიე მატარებელი') }}</div>
+          </div>
+
+          <div class="form-group">
+            <label for="vagonId">{{ lang.t('Wagon class', 'ვაგონის კლასი') }}</label>
+            <select id="vagonId" class="form-control form-control--choice" formControlName="vagonId" [class.ng-invalid]="invalid('vagonId')" [attr.disabled]="!field('trainId')?.value ? true : null">
+              <option value="">{{ lang.t('Select wagon...', 'აირჩიე ვაგონი...') }}</option>
+              <option *ngFor="let v of getFilteredVagons()" [value]="v.id">{{ wagonOptionLabel(v) }}</option>
+            </select>
+            <div class="form-error" *ngIf="invalid('vagonId')">{{ lang.t('Please select a wagon', 'აირჩიე ვაგონი') }}</div>
+          </div>
+
+        </div>
+
+        <div class="passenger-list" formArrayName="passengers">
+          <div class="passenger-card" *ngFor="let passenger of passengerGroups(); let i = index" [formGroupName]="i">
+            <div class="passenger-card__head">
+              <strong>{{ lang.t('Passenger', 'მგზავრი') }} {{ i + 1 }}</strong>
+              <span>{{ lang.t('Seat required', 'ადგილი სავალდებულოა') }}</span>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label [for]="'passengerFirstName' + i">{{ lang.t('First Name', 'სახელი') }}</label>
+                <input [id]="'passengerFirstName' + i" type="text" class="form-control" formControlName="firstName" maxlength="40" [class.ng-invalid]="passengerInvalid(i, 'firstName')">
+                <div class="form-error" *ngIf="passengerInvalid(i, 'firstName')">{{ lang.t('2-40 characters required', 'საჭიროა 2-40 სიმბოლო') }}</div>
+              </div>
+
+              <div class="form-group">
+                <label [for]="'passengerLastName' + i">{{ lang.t('Last Name', 'გვარი') }}</label>
+                <input [id]="'passengerLastName' + i" type="text" class="form-control" formControlName="lastName" maxlength="40" [class.ng-invalid]="passengerInvalid(i, 'lastName')">
+                <div class="form-error" *ngIf="passengerInvalid(i, 'lastName')">{{ lang.t('2-40 characters required', 'საჭიროა 2-40 სიმბოლო') }}</div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label [for]="'passengerIdNumber' + i">{{ lang.t('ID Number', 'პირადი ნომერი') }}</label>
+                <input [id]="'passengerIdNumber' + i" type="text" class="form-control" formControlName="idNumber" maxlength="20" [class.ng-invalid]="passengerInvalid(i, 'idNumber')">
+                <div class="form-error" *ngIf="passengerInvalid(i, 'idNumber')">{{ lang.t('ID number is required', 'პირადი ნომერი სავალდებულოა') }}</div>
+              </div>
+
+              <div class="form-group">
+                <label [for]="'passengerSeat' + i">{{ lang.t('Available seat', 'თავისუფალი ადგილი') }}</label>
+                <select [id]="'passengerSeat' + i" class="form-control form-control--choice" formControlName="seatId" [class.ng-invalid]="passengerInvalid(i, 'seatId')" [attr.disabled]="!field('vagonId')?.value ? true : null">
+                  <option value="">{{ lang.t('Select seat...', 'აირჩიე ადგილი...') }}</option>
+                  <option *ngFor="let seat of getAvailableSeats(i)" [value]="seat.seatId">{{ seatOptionLabel(seat) }}</option>
+                </select>
+                <div class="form-error" *ngIf="passengerInvalid(i, 'seatId')">{{ lang.t('Please select an available seat', 'აირჩიე თავისუფალი ადგილი') }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <datalist id="stationList">
+          <option *ngFor="let s of stations" [value]="s.name || s.city || ('Station ' + s.id)"></option>
+        </datalist>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="form-section">
+        <h3 class="form-section__title"><span class="ui-icon ui-icon--card"></span>{{ lang.t('Payment', 'გადახდა') }}</h3>
+        <div class="form-group">
+          <label for="cardHolder">{{ lang.t('Card holder', 'ბარათის მფლობელი') }}</label>
+          <input id="cardHolder" type="text" class="form-control" formControlName="cardHolder" maxlength="60" [class.ng-invalid]="invalid('cardHolder')">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="cardNumber">{{ lang.t('Card number', 'ბარათის ნომერი') }}</label>
+            <input id="cardNumber" inputmode="numeric" class="form-control" formControlName="cardNumber" maxlength="23" placeholder="4242 4242 4242 4242" [class.ng-invalid]="invalid('cardNumber')">
+          </div>
+          <div class="payment-row">
+            <div class="form-group">
+              <label for="expiry">{{ lang.t('Expiry', 'ვადა') }}</label>
+              <input id="expiry" class="form-control" formControlName="expiry" maxlength="5" placeholder="MM/YY" [class.ng-invalid]="invalid('expiry')">
+            </div>
+            <div class="form-group">
+              <label for="cvv">CVV</label>
+              <input id="cvv" inputmode="numeric" class="form-control" formControlName="cvv" maxlength="4" placeholder="123" [class.ng-invalid]="invalid('cvv')">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-submit">
+        <button type="submit" class="btn btn--primary btn--large" [disabled]="!auth.isLoggedIn">
+          {{ lang.t('Pay and Book', 'გადახდა და დაჯავშნა') }}
+        </button>
+        <button type="button" class="btn btn--ghost" (click)="reset()">{{ lang.t('Reset', 'გასუფთავება') }}</button>
+      </div>
+    </form>
+
+    <aside class="booking-sidebar">
+      <div class="card booking-info">
+        <h3>{{ lang.t('Selection order', 'არჩევის რიგი') }}</h3>
+        <ul>
+          <li>{{ lang.t('Pick direction and day first.', 'ჯერ აირჩიე მიმართულება და დღე.') }}</li>
+          <li>{{ lang.t('Then choose time, wagon class and free seat.', 'შემდეგ აირჩიე დრო, ვაგონის კლასი და თავისუფალი ადგილი.') }}</li>
+          <li>{{ lang.t('Only logged-in users can complete purchase.', 'ყიდვას ასრულებს მხოლოდ ავტორიზებული მომხმარებელი.') }}</li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+
+  <div class="state-card card fade-in" *ngIf="dataLoading || isLoading">
+    <div class="loader"></div>
+    <p *ngIf="dataLoading">{{ lang.t('Loading route data...', 'მიმართულებების მონაცემები იტვირთება...') }}</p>
+    <p *ngIf="isLoading">{{ lang.t('Processing booking...', 'მიმდინარეობს დაჯავშნა...') }}</p>
+  </div>
+
+  <div class="state-card ticket-success card fade-in" *ngIf="!dataLoading && isSuccess">
+    <div class="ui-icon ui-icon--ticket ui-icon--large" aria-hidden="true"></div>
+    <h2>{{ lang.t('Ticket Booked', 'ბილეთი დაჯავშნილია') }}</h2>
+    <div class="ticket-id">
+      <span>{{ lang.t('Ticket ID', 'ბილეთის ID') }}</span>
+      <strong>{{ getTicketId() || 'N/A' }}</strong>
+    </div>
+    <div class="state-actions">
+      <a class="btn btn--primary" [routerLink]="['/ticket', getTicketId()]">{{ lang.t('Ticket', 'ბილეთი') }}</a>
+    </div>
+  </div>
+
+  <div class="state-card card fade-in" *ngIf="!dataLoading && isError">
+    <div class="ui-icon ui-icon--alert ui-icon--large" aria-hidden="true"></div>
+    <h2>{{ lang.t('Booking Failed', 'დაჯავშნა ვერ შესრულდა') }}</h2>
+    <p>{{ errorMsg }}</p>
+    <div class="state-actions">
+      <button class="btn btn--primary" (click)="step = 'form'">{{ lang.t('Try Again', 'სცადე თავიდან') }}</button>
+      <button class="btn btn--ghost" (click)="reset()">{{ lang.t('Start Over', 'თავიდან დაწყება') }}</button>
+    </div>
+  </div>
+</div>

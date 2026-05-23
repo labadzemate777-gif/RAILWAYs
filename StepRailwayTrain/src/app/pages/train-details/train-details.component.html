@@ -1,0 +1,82 @@
+<div class="detail-page container">
+  <button class="btn btn--ghost back-btn" (click)="goBack()">Back to Trains</button>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-block">
+    <div class="skeleton" style="height:48px; width:50%; margin-bottom:16px"></div>
+    <div class="skeleton" style="height:20px; width:30%; margin-bottom:32px"></div>
+    <div class="skeleton" style="height:200px; border-radius:12px"></div>
+  </div>
+
+  <!-- Error -->
+  <div class="empty-state" *ngIf="error">
+    <div class="icon"><span class="ui-icon ui-icon--alert ui-icon--large" aria-hidden="true"></span></div>
+    <h3>{{ error }}</h3>
+    <button class="btn btn--primary" (click)="goBack()">Go Back</button>
+  </div>
+
+  <!-- Content -->
+  <div *ngIf="train && !loading" class="fade-in">
+    <div class="detail-header">
+      <div class="detail-header__left">
+        <div class="detail-icon"><span class="ui-icon ui-icon--train" aria-hidden="true"></span></div>
+        <div>
+          <div class="detail-header__meta">
+            <span class="badge badge--accent">Train #{{ train.id }}</span>
+          </div>
+          <h1 class="detail-header__title">{{ train.name || 'Express Train ' + train.id }}</h1>
+        </div>
+      </div>
+      <div class="detail-header__actions">
+        <button class="btn btn--primary" (click)="bookNow()">Book This Train</button>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="detail-grid">
+      <!-- Properties -->
+      <div class="detail-card card">
+        <h2 class="detail-card__title">Train Information</h2>
+        <div class="props-table">
+          <div class="props-row" *ngFor="let entry of getEntries(train)">
+            <span class="props-row__key">{{ entry.key }}</span>
+            <span class="props-row__val">{{ entry.val }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Wagons -->
+      <div class="detail-card card">
+        <h2 class="detail-card__title">
+          Wagons
+          <span class="badge badge--accent" *ngIf="!vagonsLoading">{{ vagons.length }}</span>
+        </h2>
+
+        <div *ngIf="vagonsLoading">
+          <div class="skeleton" style="height:60px; margin-bottom:8px; border-radius:8px" *ngFor="let i of [1,2,3]"></div>
+        </div>
+
+        <div class="empty-state" *ngIf="!vagonsLoading && vagons.length === 0" style="padding:24px">
+          <div class="icon"><span class="ui-icon ui-icon--wagon ui-icon--large" aria-hidden="true"></span></div>
+          <p>No wagon data available</p>
+        </div>
+
+        <div class="wagon-list" *ngIf="!vagonsLoading && vagons.length > 0">
+          <a class="wagon-item" [routerLink]="['/wagons', wagon.id]" *ngFor="let wagon of vagons">
+            <div class="wagon-item__left">
+              <span class="wagon-item__icon ui-icon ui-icon--wagon" aria-hidden="true"></span>
+              <div>
+                <strong>{{ wagon.name || 'Wagon ' + wagon.id }}</strong>
+                <div class="wagon-item__sub" *ngIf="wagon.type || wagon.class">
+                  {{ wagon.type || wagon.class }}
+                </div>
+              </div>
+            </div>
+            <span class="wagon-item__arrow"></span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

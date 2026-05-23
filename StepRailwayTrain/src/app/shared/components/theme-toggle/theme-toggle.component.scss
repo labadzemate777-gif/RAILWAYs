@@ -1,0 +1,42 @@
+.theme-toggle {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  transition: all var(--transition);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--accent-light);
+    opacity: 0;
+    transition: opacity var(--transition);
+  }
+
+  &:hover {
+    border-color: var(--neon);
+    box-shadow: 0 0 10px var(--neon-glow);
+
+    &::before { opacity: 1; }
+  }
+
+  &__icon {
+    line-height: 1;
+    position: relative;
+    z-index: 1;
+    transition: transform var(--transition);
+  }
+
+  &:hover &__icon {
+    transform: rotate(15deg) scale(1.1);
+  }
+}

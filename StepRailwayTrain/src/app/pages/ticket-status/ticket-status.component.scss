@@ -1,0 +1,83 @@
+.ticket-page { padding-bottom: 80px; }
+
+.action-msg {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 20px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 20px;
+  font-weight: 500;
+  border: 1px solid;
+
+  &--success { background: var(--success-bg); border-color: var(--success); color: var(--success); }
+  &--error { background: var(--error-bg); border-color: var(--error); color: var(--error); }
+
+  &__close {
+    background: none; border: none; cursor: pointer;
+    font-size: 0.9rem; opacity: 0.7;
+    &:hover { opacity: 1; }
+  }
+}
+
+.search-section {
+  padding: 28px;
+  margin-bottom: 40px;
+  h3 { font-family: var(--font-display); font-size: 1.05rem; margin-bottom: 20px; }
+}
+
+.search-form {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  @media (max-width: 600px) { flex-direction: column; align-items: stretch; }
+}
+
+.search-error {
+  margin-top: 12px;
+  color: var(--error);
+  font-size: 0.9rem;
+}
+
+.ticket-result {
+  margin-top: 24px;
+  border-top: 1px solid var(--border);
+  padding-top: 24px;
+  &__header { margin-bottom: 16px; }
+}
+
+.props-table { display: flex; flex-direction: column; }
+.props-row {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem;
+  &:last-child { border-bottom: none; }
+  &__key { color: var(--text-muted); text-transform: capitalize; }
+  &__val { font-weight: 600; text-align: right; }
+}
+
+.ticket-actions { display: flex; gap: 12px; margin-top: 20px; }
+
+.all-section {
+  &__header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 20px;
+    h2 { font-family: var(--font-display); font-size: 1.4rem; }
+  }
+}
+
+.tickets-list { display: flex; flex-direction: column; gap: 12px; }
+
+.t-card {
+  padding: 20px;
+  &__top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+  &__sub { font-size: 0.8rem; color: var(--text-muted); margin-top: 6px; }
+  &__details { display: flex; flex-wrap: wrap; gap: 6px 20px; margin-bottom: 16px; }
+  &__actions { display: flex; gap: 8px; }
+}
+
+.t-detail {
+  display: flex; flex-direction: column; min-width: 80px;
+  &__key { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+  &__val { font-size: 0.88rem; font-weight: 600; }
+}

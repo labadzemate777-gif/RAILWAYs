@@ -1,0 +1,74 @@
+<div class="auth-page container">
+  <div class="page-header">
+    <h1>{{ lang.t('Account', 'ანგარიში') }} <span>{{ mode === 'login' ? lang.t('Login', 'შესვლა') : lang.t('Register', 'რეგისტრაცია') }}</span></h1>
+    <p>{{ lang.t('Sign in before buying a railway ticket.', 'ბილეთის ყიდვამდე გაიარეთ ავტორიზაცია.') }}</p>
+  </div>
+
+  <div class="auth-card card">
+    <div class="auth-tabs">
+      <button type="button" class="btn" [class.btn--primary]="mode === 'login'" [class.btn--ghost]="mode !== 'login'" (click)="setMode('login')">
+        {{ lang.t('Login', 'შესვლა') }}
+      </button>
+      <button type="button" class="btn" [class.btn--primary]="mode === 'register'" [class.btn--ghost]="mode !== 'register'" (click)="setMode('register')">
+        {{ lang.t('Register', 'რეგისტრაცია') }}
+      </button>
+    </div>
+
+    <form *ngIf="mode === 'login'" [formGroup]="loginForm" (ngSubmit)="submitLogin()" class="auth-form">
+      <div class="form-group">
+        <label for="loginPhone">{{ lang.t('Phone number', 'ტელეფონის ნომერი') }}</label>
+        <input id="loginPhone" class="form-control" type="tel" formControlName="phoneNumber" maxlength="20" placeholder="+995 5XX XX XX XX">
+        <div class="form-error" *ngIf="invalid(loginForm, 'phoneNumber')">{{ lang.t('Enter a valid phone number', 'შეიყვანეთ სწორი ტელეფონის ნომერი') }}</div>
+      </div>
+
+      <div class="form-group">
+        <label for="loginPassword">{{ lang.t('Password', 'პაროლი') }}</label>
+        <input id="loginPassword" class="form-control" type="password" formControlName="password" maxlength="40">
+        <div class="form-error" *ngIf="invalid(loginForm, 'password')">{{ lang.t('Password must be 6-40 characters', 'პაროლი უნდა იყოს 6-40 სიმბოლო') }}</div>
+      </div>
+
+      <div class="form-error form-error--server" *ngIf="errorMsg">{{ errorMsg }}</div>
+      <button class="btn btn--primary btn--large" type="submit" [disabled]="loading">
+        {{ loading ? lang.t('Please wait...', 'დაელოდეთ...') : lang.t('Login', 'შესვლა') }}
+      </button>
+    </form>
+
+    <form *ngIf="mode === 'register'" [formGroup]="registerForm" (ngSubmit)="submitRegister()" class="auth-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="firstName">{{ lang.t('First name', 'სახელი') }}</label>
+          <input id="firstName" class="form-control" type="text" formControlName="firstName" maxlength="40">
+          <div class="form-error" *ngIf="invalid(registerForm, 'firstName')">{{ lang.t('2-40 characters required', 'საჭიროა 2-40 სიმბოლო') }}</div>
+        </div>
+        <div class="form-group">
+          <label for="lastName">{{ lang.t('Last name', 'გვარი') }}</label>
+          <input id="lastName" class="form-control" type="text" formControlName="lastName" maxlength="40">
+          <div class="form-error" *ngIf="invalid(registerForm, 'lastName')">{{ lang.t('2-40 characters required', 'საჭიროა 2-40 სიმბოლო') }}</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="registerPhone">{{ lang.t('Phone number', 'ტელეფონის ნომერი') }}</label>
+        <input id="registerPhone" class="form-control" type="tel" formControlName="phoneNumber" maxlength="20" placeholder="+995 5XX XX XX XX">
+        <div class="form-error" *ngIf="invalid(registerForm, 'phoneNumber')">{{ lang.t('Enter a valid phone number', 'შეიყვანეთ სწორი ტელეფონის ნომერი') }}</div>
+      </div>
+
+      <div class="form-group">
+        <label for="registerEmail">{{ lang.t('Email', 'ელფოსტა') }}</label>
+        <input id="registerEmail" class="form-control" type="email" formControlName="email" maxlength="80">
+        <div class="form-error" *ngIf="invalid(registerForm, 'email')">{{ lang.t('Valid email is required', 'საჭიროა სწორი ელფოსტა') }}</div>
+      </div>
+
+      <div class="form-group">
+        <label for="registerPassword">{{ lang.t('Password', 'პაროლი') }}</label>
+        <input id="registerPassword" class="form-control" type="password" formControlName="password" maxlength="40">
+        <div class="form-error" *ngIf="invalid(registerForm, 'password')">{{ lang.t('Password must be 6-40 characters', 'პაროლი უნდა იყოს 6-40 სიმბოლო') }}</div>
+      </div>
+
+      <div class="form-error form-error--server" *ngIf="errorMsg">{{ errorMsg }}</div>
+      <button class="btn btn--primary btn--large" type="submit" [disabled]="loading">
+        {{ loading ? lang.t('Please wait...', 'დაელოდეთ...') : lang.t('Create account', 'ანგარიშის შექმნა') }}
+      </button>
+    </form>
+  </div>
+</div>

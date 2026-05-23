@@ -1,0 +1,102 @@
+:host { display: block; }
+
+.head {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  border-bottom: 1px solid var(--ink);
+
+  @media (max-width: 1023px) { grid-template-columns: 1fr; }
+
+  &__main {
+    padding: 64px;
+    background: var(--ink);
+    color: var(--cream);
+
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--mustard);
+    }
+    h1 {
+      margin-top: 16px;
+      font-family: var(--font-display);
+      font-size: clamp(72px, 11vw, 160px);
+      line-height: 0.9;
+    }
+    p { margin-top: 24px; font-style: italic; font-size: 22px; opacity: 0.8; }
+  }
+
+  &__side {
+    padding: 48px;
+    background: var(--mustard);
+
+    .label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+    }
+    .time {
+      margin-top: 8px;
+      font-family: var(--font-display);
+      font-size: 80px;
+      line-height: 0.9;
+    }
+    .platforms {
+      margin-top: 24px;
+      font-family: var(--font-display);
+      font-size: 48px;
+    }
+  }
+}
+
+.board {
+  background: var(--ink);
+  color: var(--cream);
+  padding: 32px 0;
+
+  &__head, &__row {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr 1fr 1fr;
+    padding: 12px 64px;
+  }
+  &__head {
+    border-bottom: 1px solid rgba(245, 239, 224, 0.3);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--mustard);
+
+    > div:last-child { text-align: right; }
+  }
+  &__row {
+    padding: 20px 64px;
+    border-bottom: 1px solid rgba(245, 239, 224, 0.1);
+    align-items: baseline;
+    transition: background 0.2s;
+    &:hover { background: rgba(245, 239, 224, 0.05); }
+
+    .time {
+      font-family: var(--font-display);
+      font-size: 36px;
+      color: var(--mustard);
+    }
+    .dest { font-style: italic; font-size: 24px; }
+    .plat, .train { font-family: var(--font-mono); font-size: 14px; }
+    .train { opacity: 0.7; }
+    .status {
+      text-align: right;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+
+      &--ontime { color: var(--sage); }
+      &--boarding { color: var(--mustard); }
+      &--delayed { color: #d44; }
+    }
+  }
+}

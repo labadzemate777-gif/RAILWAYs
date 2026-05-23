@@ -1,0 +1,109 @@
+<div class="ticket-page container">
+  <div class="page-header">
+    <h1>My <span>Tickets</span></h1>
+    <p>Check status, confirm, or cancel your bookings</p>
+  </div>
+
+  <!-- Action message -->
+  <div class="action-msg" *ngIf="actionMsg" [class.action-msg--success]="actionType === 'success'" [class.action-msg--error]="actionType === 'error'">
+    <span>{{ actionMsg }}</span>
+    <button class="action-msg__close" (click)="dismissAction()"><span class="ui-icon ui-icon--close" aria-hidden="true"></span></button>
+  </div>
+
+  <!-- Search -->
+  <div class="search-section card">
+    <h3><span class="ui-icon ui-icon--search" aria-hidden="true"></span> Check Ticket Status</h3>
+    <form [formGroup]="searchForm" (ngSubmit)="search()" class="search-form">
+      <div class="form-group" style="flex:1">
+        <label for="ticketId">Ticket ID</label>
+        <input id="ticketId" type="text" class="form-control" formControlName="ticketId"
+               placeholder="Enter your ticket ID..."
+               [class.ng-invalid]="searchForm.get('ticketId')?.invalid && searchForm.get('ticketId')?.touched"
+               [class.ng-touched]="searchForm.get('ticketId')?.touched">
+        <div class="form-error" *ngIf="searchForm.get('ticketId')?.invalid && searchForm.get('ticketId')?.touched">
+          Ticket ID is required
+        </div>
+      </div>
+      <button type="submit" class="btn btn--primary" [disabled]="loading">
+        {{ loading ? 'Searching...' : 'Search' }}
+      </button>
+    </form>
+
+    <!-- Search Error -->
+    <div class="search-error" *ngIf="error"><span class="ui-icon ui-icon--alert" aria-hidden="true"></span> {{ error }}</div>
+
+    <!-- Ticket result -->
+    <div class="ticket-result fade-in" *ngIf="ticket">
+      <div class="ticket-result__header">
+        <span class="badge badge--success">Ticket Found</span>
+      </div>
+      <div class="props-table">
+        <div class="props-row" *ngFor="let e of getEntries(ticket)">
+          <span class="props-row__key">{{ e.key }}</span>
+          <span class="props-row__val">{{ e.val }}</span>
+        </div>
+      </div>
+      <div class="ticket-actions">
+        <button class="btn btn--primary" type="button" (click)="confirm(ticket)" [disabled]="isConfirmed(ticket) || actionLoadingId === ticketId(ticket)">
+          <span class="ui-icon ui-icon--check" aria-hidden="true"></span> {{ actionLoadingId === ticketId(ticket) ? 'Working...' : 'Confirm' }}
+        </button>
+        <button class="btn btn--danger" type="button" (click)="cancel(ticket)" [disabled]="actionLoadingId === ticketId(ticket)">
+          <span class="ui-icon ui-icon--close" aria-hidden="true"></span> {{ actionLoadingId === ticketId(ticket) ? 'Working...' : 'Cancel' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- All Tickets -->
+  <div class="all-section">
+    <div class="all-section__header">
+      <h2>All Tickets</h2>
+      <button class="btn btn--danger" *ngIf="allTickets.length > 0" (click)="cancelAll()">
+        Cancel All
+      </button>
+    </div>
+
+    <div *ngIf="allLoading">
+      <div class="skeleton" style="height:80px; margin-bottom:8px; border-radius:12px" *ngFor="let i of [1,2,3]"></div>
+    </div>
+
+    <div class="empty-state" *ngIf="!allLoading && allTickets.length === 0">
+      <div class="icon"><span class="ui-icon ui-icon--ticket ui-icon--large" aria-hidden="true"></span></div>
+      <h3>No tickets found</h3>
+      <p>Your bookings will appear here</p>
+      <a routerLink="/booking" class="btn btn--primary">Book a Ticket</a>
+    </div>
+
+    <div class="tickets-list" *ngIf="!allLoading && allTickets.length > 0">
+      <div class="t-card card fade-in" *ngFor="let t of allTickets; let i = index" [style.animation-delay]="i*0.05+'s'">
+        <div class="t-card__top">
+          <div>
+            <span class="badge badge--accent">Ticket #{{ ticketId(t) }}</span>
+            <div class="t-card__sub" *ngIf="trainId(t)">Train: {{ trainId(t) }}</div>
+          </div>
+          <div class="t-card__status">
+            <span class="badge" [class.badge--success]="isConfirmed(t)" [class.badge--warning]="!isConfirmed(t)">
+              {{ isConfirmed(t) ? 'confirmed' : 'pending' }}
+            </span>
+          </div>
+        </div>
+        <div class="t-card__details">
+          <ng-container *ngFor="let e of getEntries(t)">
+            <div class="t-detail" *ngIf="e.key !== 'id' && e.key !== 'status'">
+              <span class="t-detail__key">{{ e.key }}</span>
+              <span class="t-detail__val">{{ e.val }}</span>
+            </div>
+          </ng-container>
+        </div>
+        <div class="t-card__actions">
+          <button class="btn btn--ghost" type="button" style="font-size:0.8rem; padding:6px 12px" (click)="confirm(t)" [disabled]="isConfirmed(t) || actionLoadingId === ticketId(t)">
+            {{ actionLoadingId === ticketId(t) ? 'Working...' : 'Confirm' }}
+          </button>
+          <button class="btn btn--danger" type="button" style="font-size:0.8rem; padding:6px 12px" (click)="cancel(t)" [disabled]="actionLoadingId === ticketId(t)">
+            {{ actionLoadingId === ticketId(t) ? 'Working...' : 'Cancel' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

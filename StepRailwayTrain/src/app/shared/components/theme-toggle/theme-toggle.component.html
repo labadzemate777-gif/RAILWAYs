@@ -1,0 +1,4 @@
+<button class="theme-toggle" (click)="toggle()" [attr.aria-label]="(themeService.darkMode$ | async) ? 'Switch to light mode' : 'Switch to dark mode'">
+  <span class="theme-toggle__icon" *ngIf="!(themeService.darkMode$ | async)">🌙</span>
+  <span class="theme-toggle__icon" *ngIf="themeService.darkMode$ | async">☀️</span>
+</button>
